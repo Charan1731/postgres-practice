@@ -10,14 +10,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const pg_1 = require("pg");
-const pgClient = new pg_1.Client("postgresql://admin:admin123@localhost:5432/testdb");
+const pgClient = new pg_1.Client("postgresql://admin:admin123@localhost:5432/users`");
+const pgClient2 = new pg_1.Client({
+    user: "admin",
+    password: "admin123",
+    host: "localhost",
+    port: 5432,
+    database: "students"
+});
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        yield pgClient.connect();
-        const res = yield pgClient.query(`INSERT INTO users (username, email, password)
-VALUES ('username_here', 'user@example.com', 'user_password');`);
+        yield pgClient2.connect();
+        const res = yield pgClient2.query(`select * from users;`);
         console.log(res.rows);
-        console.log("Connected to PostgreSQL");
     });
 }
 main();
