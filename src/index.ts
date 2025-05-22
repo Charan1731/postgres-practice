@@ -15,7 +15,8 @@ const pgClient = new Client({
 app.post('/users', async (req, res) => {
     const { id, name, email } = req.body;
 
-    const unsafeQuery = `INSERT INTO users(id, name, email) VALUES(${id}, '${name}', '${email}')`;
+
+    const unsafeQuery = `INSERT INTO users(id, name, email) VALUES(${id}, '${name}', '${email}s')`;
 
     try {
         await pgClient.query(unsafeQuery);
