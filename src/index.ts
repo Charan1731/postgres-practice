@@ -15,12 +15,21 @@ const pgClient = new Client({
 app.post('/users', async (req, res) => {
     const { id, name, email } = req.body;
 
+    const schoolId = req.body.sId;
 
-    const unsafeQuery = `INSERT INTO users(id, name, email) VALUES(${id}, '${name}', '${email}s')`;
+    const schoolName = req.body.sName;
+
+
+    const unsafeQuery = `INSERT INTO users(id, name, email) VALUES($1, $2, $3) RETURNING id`;
 
     try {
-        await pgClient.query(unsafeQuery);
-        res.status(200).json({ message: "User inserted (UNSAFE)" });
+        const result = await pgClient.query(unsafeQuery, [id, name, email]);
+        const schoolDetails = await pgClient.query(`INSERT INTO school(id,user_id,name) VALUES($1, $2, $3) RETURNING id`, [schoolId, result.rows[0].id, schoolName]);
+        res.status(200).json({ 
+            message: "User inserted successfully", 
+            result: result.rows[0].id, 
+            schoolDetails: schoolDetails.rows[0].id 
+        });
     } catch (error: any) {
         console.error("Database error:", error);
         res.status(500).json({ message: "Error inserting user", error: error.message });
